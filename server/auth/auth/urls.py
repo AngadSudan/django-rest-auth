@@ -19,6 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/auth',include('api/urls.py')),
-    path('api/v1/payment',include('razorpay/urls.py'))
+    path('api/v1/auth/',include('api.urls'))
 ]

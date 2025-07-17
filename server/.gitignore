@@ -1,68 +1,60 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
+*$py.class
 
-# Virtual environments
-venv/
-env/
+# Virtual environment
 .venv/
+env/
+venv/
 ENV/
+Lib/
+Scripts/
+pyvenv.cfg
 
-# Django
+# Django & Python stuff
 *.log
 *.pot
 *.pyc
-local_settings.py
-db.sqlite3
-media/
-staticfiles/
+*.pyo
+*.db
+*.sqlite3
+*.lock
+*.bak
 
-# Django Migrations (optional)
-*/migrations/*.pyc
-*/migrations/__pycache__/
-*/migrations/*.py
-
-# VSCode / IDEs
+# VS Code
 .vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
+
+# Django migrations (optional to ignore)
+**/migrations/*.py
+!**/migrations/__init__.py
+**/migrations/*.pyc
 
 # OS-specific
 .DS_Store
 Thumbs.db
 
-# Environment variables
-.env
+# Python dependency management
+Pipfile
+Pipfile.lock
+poetry.lock
+.cache/
+.eggs/
+dist/
+build/
+
+# Auth/token files or sensitive configs
+*.env
 .env.*
+.envrc
+.secret
+.secrets
 
-# Pip
-pip-wheel-metadata/
-
-# pytest
-.cache
-.pytest_cache/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# coverage
-htmlcov/
+# Coverage / testing
 .coverage
-.coverage.*
-
-# Docker
-*.pid
-*.seed
-*.pid.lock
-
-# Jupyter
-.ipynb_checkpoints
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
