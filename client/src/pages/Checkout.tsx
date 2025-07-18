@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Check, CreditCard, Shield, Star } from "lucide-react";
 import configuraton from "../conf/configuration";
-
+import axios from "axios";
+import Cookie from "js-cookie";
 declare global {
   interface Window {
     Razorpay: any;
@@ -187,19 +188,25 @@ function CheckoutContent({
   React.useEffect(() => {
     async function createOrderId() {
       try {
-        const response = await fetch(
+        const csrftoken = Cookie.get("csrftoken");
+        console.log("Token being sent:", Cookie.get("authtoken"));
+        const response = await axios.post(
           configuraton.backend_url + "/api/v1/auth/razorpay_order/",
           {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              amount: amount * 100,
-              planType,
-              billing,
-            }),
+            amount: amount * 100,
+            planType,
+            billing,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+              Authorization: `Token ${Cookie.get("authtoken")}`,
+            },
+            // withCredentials: true,
           }
         );
-        const { orderId } = await response.json();
+        const { orderId } = response.data;
         idRef.current = orderId;
       } catch (err) {
         setOrderError("Failed to create order.");
@@ -239,21 +246,25 @@ function CheckoutContent({
       } Plan (${billing}) - ₹${amount.toLocaleString()}`,
       order_id: orderId,
       handler: async (response: any) => {
-        const res = await fetch(
-          configuraton.backend_url + "/api/v1/auth/razorpay_callback",
+        const csrftoken = Cookie.get("csrftoken");
+        const { data } = await axios.post(
+          configuraton.backend_url + "/api/v1/auth/razorpay_callback/",
           {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderCreationId: orderId,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-              planType,
-              billing,
-            }),
+            razorpay_order_id: orderId,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            planType,
+            billing,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+              Authorization: "Token " + Cookie.get("authtoken"),
+            },
           }
         );
-        const data = await res.json();
         alert(data.message);
       },
       theme: { color: "#3B82F6" },

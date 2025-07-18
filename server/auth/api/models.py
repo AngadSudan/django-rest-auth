@@ -7,6 +7,7 @@ class Subscription(models.Model):
     subscription_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subscription_plan = models.CharField(max_length=100)
     subscription_bought_date = models.DateField()
+    amount = models.BigIntegerField(null=False,blank=False,default=0)
     subscription_expiry_date = models.DateField()
     bought_by = models.ForeignKey('Profile', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -33,4 +34,4 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user_id.username
+        return str(self.user_id.pk)

@@ -8,7 +8,16 @@ from .serializers import ProfileSerializer, UserSerializer
 from django.contrib.auth import authenticate
 from datetime import datetime
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import AllowAny
+from .util import send_custom_email
+from random import random
+
+def generateOtp():
+    return f"{int(random() * 1000000):06d}"
+
 class RegisterView(APIView):
+    authentication_classes = []     # disables default TokenAuthentication
+    permission_classes = [AllowAny] # allows access to unauthenticated users
     def get(self, request):
         return Response({"message": "User registration API working"}, status=status.HTTP_200_OK)
 
@@ -38,6 +47,8 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    authentication_classes = []     # disables default TokenAuthentication
+    permission_classes = [AllowAny] # allows access to unauthenticated users
     def get(self, request):
         return Response({"message": "User login API working"}, status=status.HTTP_200_OK)
 
@@ -77,3 +88,18 @@ class UserProfile(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForgotPasswordView(APIView):
+    authentication_classes = []     # disables default TokenAuthentication
+    permission_classes = [AllowAny] # allows access to unauthenticated users
+    def post(self, request):
+        to = request.data.get("email")
+        otp = generateOtp()
+        message = 'login otp is ' + otp
+        send_custom_email(
+            to_email=to,
+            subject="Forgot Password!",
+            message=message
+        )
+        return Response({"message": "Email sent"}, status=status.HTTP_200_OK)
