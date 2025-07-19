@@ -12,7 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from corsheaders.defaults import default_headers
+from dotenv import load_end
+import os
+load_end()
 
+FRONTEND_URL = os.getenv(FRONTEND_URL)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,9 +72,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     # add production urls later on
+    FRONTEND_URL
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
+    FRONTEND_URL
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = (
@@ -122,7 +128,7 @@ DATABASES = {
         'NAME': 'auth',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

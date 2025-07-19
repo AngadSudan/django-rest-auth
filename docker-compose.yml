@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  backend:
+    image: angadsudan/django-backend
+    container_name: django_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./server/auth/.env
+
+  frontend:
+    image: angadsudan/django-frontend
+    container_name: react_app
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./client/.env
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
