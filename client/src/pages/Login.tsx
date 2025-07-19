@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import configuraton from "../conf/configuration";
 import axios from "axios";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import Cookie from "js-cookie";
 import { useNavigate } from "react-router";
 // Types
@@ -42,6 +42,13 @@ const LoginPage: React.FC = () => {
     return emailRegex.test(email);
   };
 
+  React.useEffect(() => {
+    const authToken = Cookie.get("authtoken");
+    console.log(authToken + "-----------");
+    if (!authToken) {
+      router("/login");
+    }
+  }, []);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -104,8 +111,6 @@ const LoginPage: React.FC = () => {
       );
 
       console.log("Login successful:", response);
-      alert("Login functionality would be implemented here!");
-
       const token = response.data.token;
       Cookie.set("authtoken", token);
 
@@ -235,13 +240,12 @@ const LoginPage: React.FC = () => {
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <a
-                href="#"
+              <Link
+                to="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-500 font-medium transition-colors"
-                onClick={(e) => e.preventDefault()}
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             {/* Submit Button */}

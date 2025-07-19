@@ -156,7 +156,7 @@ class CallbackView(APIView):
                     subscription_expiry_date=expiry_date,
                     bought_by=profile
                 )
-
+                #somehow get the email and send an email containing the invoice
                 # Update profile with new subscription
                 profile.subscription_id = new_subscription
                 profile.save()

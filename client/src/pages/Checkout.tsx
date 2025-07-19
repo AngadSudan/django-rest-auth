@@ -3,6 +3,7 @@ import { Check, CreditCard, Shield, Star } from "lucide-react";
 import configuraton from "../conf/configuration";
 import axios from "axios";
 import Cookie from "js-cookie";
+import { useNavigate } from "react-router";
 declare global {
   interface Window {
     Razorpay: any;
@@ -59,6 +60,14 @@ function PlanSelection({
     "monthly" | "yearly"
   >("monthly");
 
+  const router = useNavigate();
+  React.useEffect(() => {
+    const authToken = Cookie.get("authtoken");
+    console.log(authToken + "-----------");
+    if (!authToken) {
+      router("/login");
+    }
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4">
       <div className="max-w-4xl w-full space-y-8">
@@ -184,7 +193,14 @@ function CheckoutContent({
 
   const selectedPlan = PLANS[planType as keyof typeof PLANS];
   const amount = selectedPlan[billing as keyof typeof selectedPlan] as number;
-
+  const router = useNavigate();
+  React.useEffect(() => {
+    const authToken = Cookie.get("authtoken");
+    console.log(authToken + "-----------");
+    if (!authToken) {
+      router("/login");
+    }
+  }, []);
   React.useEffect(() => {
     async function createOrderId() {
       try {
@@ -265,14 +281,17 @@ function CheckoutContent({
             },
           }
         );
-        alert(data.message);
+        router("/success");
       },
       theme: { color: "#3B82F6" },
     };
 
     if (typeof window !== "undefined" && window.Razorpay) {
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", (err: any) => alert(err.error.description));
+      rzp.on("payment.failed", (err: any) => {
+        alert(err.error.description);
+        router("/failiure");
+      });
       rzp.open();
     } else {
       alert("Payment gateway not available.");

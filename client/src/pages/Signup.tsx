@@ -3,7 +3,7 @@ import { Mail, Lock, Eye, EyeOff, User, UserPlus, Check } from "lucide-react";
 import axios from "axios";
 import configuraton from "../conf/configuration";
 import Cookie from "js-cookie";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router-dom";
 // Types
 interface FormData {
   name: string;
@@ -36,12 +36,20 @@ interface PasswordRequirement {
 }
 
 const SignupPage: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  React.useEffect(() => {
+    const authToken = Cookie.get("authtoken");
+    console.log(authToken + "-----------");
+    if (!authToken) {
+      navigate("/login");
+    }
+  }, []);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
@@ -154,7 +162,7 @@ const SignupPage: React.FC = () => {
       console.log(response);
       // Mock successful response
       console.log("Signup successful:", response);
-      alert("Account created successfully! You can now log in.");
+      navigate("/");
 
       // Here you would typically:
       // - Show success message
